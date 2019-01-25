@@ -1,0 +1,25 @@
+import { Directive } from '@angular/core';
+import { AsyncValidator, AbstractControl, ValidationErrors, NG_ASYNC_VALIDATORS } from '@angular/forms';
+import { UsedService } from './used.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+@Directive({
+  selector: '[appUniquevalid]',
+  providers: [{provide: NG_ASYNC_VALIDATORS,
+               useExisting:UniquevalidDirective, multi: true }]
+})
+export class UniquevalidDirective implements AsyncValidator {
+
+  constructor( private csd:UsedService) { }
+  validate(control: AbstractControl): Observable<ValidationErrors | null>{
+return this.csd.getdetailsed(control.value).pipe(
+  map( users => {
+    return users && users.length > 0 ? { 'uniqueEmail': true}: null;
+  })
+)
+
+  }
+ 
+
+}
